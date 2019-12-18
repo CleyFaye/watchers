@@ -2,9 +2,9 @@
   "name": "@cley_faye/watchers",
   "version": "0.1.0",
   "description": "Run multiple watcher at once",
-  "main": "bin/main.js",
+  "bin": "bin/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepack": "npx tsc"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/CleyFaye/watchers/issues"
   },
-  "homepage": "https://github.com/CleyFaye/watchers#readme"
+  "homepage": "https://github.com/CleyFaye/watchers#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.21",
+    "@typescript-eslint/eslint-plugin": "^2.12.0",
+    "@typescript-eslint/parser": "^2.12.0",
+    "eslint": "^6.7.2",
+    "typescript": "^3.7.3"
+  },
+  "files": [
+    "bin/**/*.js"
+  ]
 }

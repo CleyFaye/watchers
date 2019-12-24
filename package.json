@@ -6,6 +6,9 @@
   "scripts": {
     "prepack": "npx tsc"
   },
+  "esm": {
+    "cache": false
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CleyFaye/watchers.git"
@@ -25,5 +28,9 @@
   },
   "files": [
     "bin/**/*.js"
-  ]
+  ],
+  "dependencies": {
+    "@cley_faye/loadconfig": "^1.1.2",
+    "esm": "^3.2.25"
+  }
 }

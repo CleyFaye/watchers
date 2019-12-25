@@ -35,9 +35,12 @@
   },
   "dependencies": {
     "@cley_faye/loadconfig": "^1.1.2",
-    "esm": "^3.2.25"
+    "chalk": "^3.0.0",
+    "esm": "^3.2.25",
+    "tree-kill": "^1.2.2"
   },
   "files": [
-    "bin/**/*.js"
+    "bin/**/*",
+    "!bin/test/*"
   ]
 }

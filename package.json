@@ -13,7 +13,10 @@
     "type": "git",
     "url": "git+https://github.com/CleyFaye/watchers.git"
   },
-  "author": "Gabriel Paul \"Cley Faye\" Risterucci",
+  "author": {
+    "name": "Gabriel Paul \"Cley Faye\" Risterucci",
+    "email": "cleyfaye@cleyfaye.net"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/CleyFaye/watchers/issues"

@@ -33,11 +33,11 @@
     "load-grunt-tasks": "^5.1.0",
     "typescript": "^3.7.3"
   },
-  "files": [
-    "bin/**/*.js"
-  ],
   "dependencies": {
     "@cley_faye/loadconfig": "^1.1.2",
     "esm": "^3.2.25"
-  }
+  },
+  "files": [
+    "bin/**/*.js"
+  ]
 }

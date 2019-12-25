@@ -1,6 +1,6 @@
 {
   "name": "@cley_faye/watchers",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Run multiple watcher at once",
   "bin": "bin/main.js",
   "scripts": {

@@ -23,10 +23,12 @@
   },
   "homepage": "https://github.com/CleyFaye/watchers#readme",
   "devDependencies": {
+    "@cley_faye/eslint-config": "^0.3.1",
     "@types/node": "^12.12.34",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "eslint": "^6.8.0",
+    "eslint-plugin-promise": "^4.2.1",
     "grunt": "^1.1.0",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-ts": "^6.0.0-beta.22",

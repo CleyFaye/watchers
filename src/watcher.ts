@@ -4,6 +4,7 @@ import {OptionType} from "@cley_faye/loadconfig/lib/optiontype";
 import loadConfig from "@cley_faye/loadconfig";
 import chalk from "chalk";
 import treeKill from "tree-kill";
+import ansiSeq from "ansi-escape-sequences";
 
 export interface WatcherOptions extends ConfigType {
   command: Array<string>;
@@ -20,9 +21,10 @@ const formatProcessOutput = (
 ): void => {
   const lines = fullOutput.toString().trim()
     .split("\n");
+  const MAX_NAME_LEN = 15;
   const coloredName = error
-    ? chalk.red(`ERR ${processName}`)
-    : chalk.white(`OUT ${processName}`);
+    ? chalk.red(`ERR ${processName.substr(0, MAX_NAME_LEN)}`)
+    : chalk.white(`OUT ${processName.substr(0, MAX_NAME_LEN)}`);
   lines.forEach(line => {
     log(`[${coloredName}] ${line}`);
   });
@@ -138,7 +140,7 @@ const registerProcess = (
     (code: number) => {
       formatProcessOutput(
         "watchers",
-        code !== 0,
+        Boolean(code),
         `Process ${name}(${proc.pid}) ended with code ${code}`,
       );
       removeProcess(proc, list, onEmpty);
@@ -154,6 +156,42 @@ const allProcessExited = (): void => {
   );
   // eslint-disable-next-line no-process-exit
   process.exit(0);
+};
+
+const stopAllFromSignal = (activeProcess: Array<ChildProcess>) => {
+  formatProcessOutput(
+    "watchers",
+    false,
+    "Received 'SIGINT' press, stopping processes",
+  );
+  activeProcess.forEach(proc => treeKill(proc.pid));
+};
+
+const keyHandlerHelpers = (activeProcess: Array<ChildProcess>) => {
+  process.stdin.on("data", (data: string): void => {
+    const str = data.toString();
+    if (str.toLowerCase() === "q") {
+      formatProcessOutput(
+        "watchers",
+        false,
+        "Received 'q' press, stopping processes",
+      );
+      activeProcess.forEach(proc => treeKill(proc.pid));
+      return;
+    }
+    if (str.toLowerCase() === "c") {
+      const FULLSCREEN_ERASE = 2;
+      log(ansiSeq.erase.display(FULLSCREEN_ERASE));
+      return;
+    }
+    if (str === "\u0003") {
+      stopAllFromSignal(activeProcess);
+      return;
+    }
+    if (str === "\r") {
+      log("");
+    }
+  });
 };
 
 export const watcher = (options: WatcherOptions): void => {
@@ -174,14 +212,14 @@ export const watcher = (options: WatcherOptions): void => {
   formatProcessOutput(
     "watchers",
     false,
-    "All process started; press 'q' to exit them all",
+    "All process started; press 'q' to exit them all, 'c' to clear console",
   );
   process.stdin.setRawMode(true);
-  process.stdin.on("data", (data: string): void => {
-    if (data.toString().toLowerCase() === "q") {
-      activeProcess.forEach(proc => treeKill(proc.pid));
-    }
-  });
+  keyHandlerHelpers(activeProcess);
+  const sigHandler = () => {
+    stopAllFromSignal(activeProcess);
+  };
+  process.once("SIGINT", sigHandler);
 };
 
 export const main = (): void => {

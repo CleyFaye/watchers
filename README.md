@@ -39,6 +39,7 @@ This command can be run using `npx watchers`.
 
 The command will display some informations about running the requested commands
 then start outputting each command's output in real time.
-To stop all processes at once, press 'q' in the terminal.
+To stop all processes at once, press 'q' in the terminal (or, alternatively, the widely used but
+only recently supported `<C-c>`).
 
 If all process otherwise completes, the watcher will automatically end.

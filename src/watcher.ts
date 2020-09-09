@@ -9,29 +9,34 @@ export interface WatcherOptions extends ConfigType {
   command: Array<string>;
 }
 
+// eslint-disable-next-line no-console
+const log = (...args: Array<unknown>) => console.log(...args);
+
 /** Output each line of fullOutput prefixed with the process name */
 const formatProcessOutput = (
   processName: string,
   error: boolean,
-  fullOutput: string
+  fullOutput: string,
 ): void => {
-  const lines = fullOutput.toString().trim().split("\n");
+  const lines = fullOutput.toString().trim()
+    .split("\n");
   const coloredName = error
     ? chalk.red(`ERR ${processName}`)
     : chalk.white(`OUT ${processName}`);
   lines.forEach(line => {
-    console.log(`[${coloredName}] ${line}`);
+    log(`[${coloredName}] ${line}`);
   });
 };
 
 /** Split string into separate tokens */
 const splitCommandArgs = (
-  commandString: string
+  commandString: string,
 ): Array<string> => {
-  const re = /(?:(?:\\\s|[^\s"])+|"[^"]*")+/g;
+  const re = /(?:(?:\\\s|[^\s"])+|"[^"]*")+/gu;
   return (commandString.match(re) as Array<string>).map(arg => {
     if (arg.startsWith("\"") && arg.endsWith("\"")) {
-      return arg.substr(1, arg.length - 2);
+      const argQuoteLimit = 2;
+      return arg.substr(1, arg.length - argQuoteLimit);
     }
     return arg;
   });
@@ -39,7 +44,7 @@ const splitCommandArgs = (
 
 /** Cut a command string to a suitable command/args for spawn() */
 const commandStringToSpawnArgs = (
-  commandString: string
+  commandString: string,
 ): {
   command: string;
   args: Array<string>;
@@ -67,20 +72,20 @@ const spawnProcess = (
         "pipe",
       ],
       windowsHide: true,
-    }
+    },
   );
   result.stdout.on(
     "data",
-    data => formatProcessOutput(commandString, false, data)
+    data => formatProcessOutput(commandString, false, data),
   );
   result.stderr.on(
     "data",
-    data => formatProcessOutput(commandString, true, data)
+    data => formatProcessOutput(commandString, true, data),
   );
   formatProcessOutput(
     "watchers",
     false,
-    `Spawned ${spawnArgs.command} with PID ${result.pid}`
+    `Spawned ${spawnArgs.command} with PID ${result.pid}`,
   );
   return result;
 };
@@ -90,11 +95,11 @@ type EmptyCallback = () => void;
 
 /** Remove a process from a list */
 const removeProcess = (
-  process: ChildProcess,
+  proc: ChildProcess,
   list: Array<ChildProcess>,
-  onEmpty: EmptyCallback
+  onEmpty: EmptyCallback,
 ): void => {
-  const index = list.indexOf(process);
+  const index = list.indexOf(proc);
   if (index === -1) {
     return;
   }
@@ -108,36 +113,36 @@ const removeProcess = (
  * process complete.
  */
 const registerProcess = (
-  process: ChildProcess,
+  proc: ChildProcess,
   list: Array<ChildProcess>,
-  onEmpty: EmptyCallback
+  onEmpty: EmptyCallback,
 ): void => {
-  list.push(process);
-  const castedProcess = ((process as unknown) as Record<string, Array<string>>);
-  const name = castedProcess.spawnargs && castedProcess.spawnargs.join(" ")
-    || process.pid.toString()
+  list.push(proc);
+  const castedProcess = ((proc as unknown) as Record<string, Array<string>>);
+  const name = castedProcess.spawnargs.join(" ")
+    || proc.pid.toString()
     || "???";
-  process.on(
+  proc.on(
     "error",
     () => {
       formatProcessOutput(
         "watchers",
         true,
-        `Process ${name} failed to start`
+        `Process ${name} failed to start`,
       );
-      removeProcess(process, list, onEmpty);
-    }
+      removeProcess(proc, list, onEmpty);
+    },
   );
-  process.on(
+  proc.on(
     "exit",
     (code: number) => {
       formatProcessOutput(
         "watchers",
-        code != 0,
-        `Process ${name}(${process.pid}) ended with code ${code}`
+        code !== 0,
+        `Process ${name}(${proc.pid}) ended with code ${code}`,
       );
-      removeProcess(process, list, onEmpty);
-    }
+      removeProcess(proc, list, onEmpty);
+    },
   );
 };
 
@@ -145,40 +150,42 @@ const allProcessExited = (): void => {
   formatProcessOutput(
     "watchers",
     false,
-    "All process completed; exiting"
+    "All process completed; exiting",
   );
+  // eslint-disable-next-line no-process-exit
   process.exit(0);
 };
 
 export const watcher = (options: WatcherOptions): void => {
   const {command: commands} = options;
-  if (commands.length == 0) {
-    console.log("No commands provided");
+  if (commands.length === 0) {
+    log("No commands provided");
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   }
   const activeProcess: Array<ChildProcess> = [];
   commands.map(command => spawnProcess(
-    command
-  )).forEach(process => registerProcess(
-    process,
+    command,
+  )).forEach(proc => registerProcess(
+    proc,
     activeProcess,
-    allProcessExited
+    allProcessExited,
   ));
   formatProcessOutput(
     "watchers",
     false,
-    "All process started; press 'q' to exit them all"
+    "All process started; press 'q' to exit them all",
   );
   process.stdin.setRawMode(true);
   process.stdin.on("data", (data: string): void => {
     if (data.toString().toLowerCase() === "q") {
-      activeProcess.forEach(process => treeKill(process.pid));
+      activeProcess.forEach(proc => treeKill(proc.pid));
     }
   });
 };
 
 export const main = (): void => {
-  loadConfig<WatcherOptions>(
+  watcher(loadConfig<WatcherOptions>(
     {
       command: {
         type: OptionType.STRING,
@@ -186,6 +193,6 @@ export const main = (): void => {
         defaultValue: [],
       },
     },
-    "watchers"
-  ).then(watcher);
+    "watchers",
+  ));
 };

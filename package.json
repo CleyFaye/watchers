@@ -3,11 +3,10 @@
   "version": "1.1.1",
   "description": "Run multiple watcher at once",
   "bin": "bin/main.js",
+  "type": "module",
   "scripts": {
-    "prepack": "npx grunt clean build"
-  },
-  "esm": {
-    "cache": false
+    "prepack": "npm run grunt -- clean build",
+    "grunt": "npm exec grunt -- --gruntfile Gruntfile.cjs"
   },
   "repository": {
     "type": "git",
@@ -40,11 +39,10 @@
     "@cley_faye/loadconfig": "^3.0.2",
     "ansi-escape-sequences": "^6.0.1",
     "chalk": "^4.1.0",
-    "esm": "^3.2.25",
     "tree-kill": "^1.2.2"
   },
   "files": [
     "bin/**/*",
-    "!bin/test/*"
+    "!bin/**/*.map"
   ]
 }

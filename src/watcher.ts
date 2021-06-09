@@ -1,6 +1,6 @@
 import {spawn, ChildProcess} from "child_process";
-import {ConfigType} from "@cley_faye/loadconfig/lib/configtype";
-import {OptionType} from "@cley_faye/loadconfig/lib/optiontype";
+import {ConfigType} from "@cley_faye/loadconfig/lib/configtype.js";
+import {OptionType} from "@cley_faye/loadconfig/lib/optiontype.js";
 import loadConfig from "@cley_faye/loadconfig";
 import chalk from "chalk";
 import treeKill from "tree-kill";

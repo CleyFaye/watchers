@@ -11,8 +11,10 @@ module.exports = grunt => {
     },
     "ts": {
       build: {
-        tsconfig: "./tsconfig.json",
-        passThrough: true,
+        tsconfig: {
+          tsconfig: "./",
+          passThrough: true,
+        },
       },
     },
   });

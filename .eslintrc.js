@@ -1,3 +1,1 @@
-const eslintConfig = require("@cley_faye/eslint-config");
-
-module.exports = eslintConfig({typescript: "./tsconfig.json"});
+module.exports = require("@keeex/eslint-config")({typescript: "./tsconfig.json"});

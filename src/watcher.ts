@@ -230,12 +230,14 @@ export const watcher = (options: WatcherOptions): void => {
 export const main = (): void => {
   watcher(loadConfig<WatcherOptions>(
     {
-      command: {
-        type: OptionType.STRING,
-        multiple: true,
-        defaultValue: [],
+      options: {
+        command: {
+          type: OptionType.STRING,
+          multiple: true,
+          defaultValue: [],
+        },
       },
+      configName: "watchers",
     },
-    "watchers",
   ));
 };

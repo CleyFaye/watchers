@@ -16,7 +16,11 @@ module.exports = grunt => {
     "clean": {
       build: [
         "bin",
+      ],
+      cache: [
+        "**/.cache",
         ".tscache",
+        ".tsbuildinfo",
       ],
     },
     "ts": {

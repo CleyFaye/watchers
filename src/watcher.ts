@@ -87,7 +87,7 @@ const spawnProcess = (
   formatProcessOutput(
     "watchers",
     false,
-    `Spawned ${spawnArgs.command} with PID ${result.pid}`,
+    `Spawned ${spawnArgs.command} with PID ${result.pid ?? "<nopid>"}`,
   );
   return result;
 };
@@ -122,8 +122,7 @@ const registerProcess = (
   list.push(proc);
   const castedProcess = ((proc as unknown) as Record<string, Array<string>>);
   const name = castedProcess.spawnargs.join(" ")
-    || proc.pid.toString()
-    || "???";
+    || (proc.pid?.toString() ?? "<nopid>");
   proc.on(
     "error",
     () => {
@@ -141,7 +140,7 @@ const registerProcess = (
       formatProcessOutput(
         "watchers",
         Boolean(code),
-        `Process ${name}(${proc.pid}) ended with code ${code}`,
+        `Process ${name}(${proc.pid ?? "<nopid>"}) ended with code ${code}`,
       );
       removeProcess(proc, list, onEmpty);
     },
@@ -164,7 +163,10 @@ const stopAllFromSignal = (activeProcess: Array<ChildProcess>) => {
     false,
     "Received 'SIGINT' press, stopping processes",
   );
-  activeProcess.forEach(proc => treeKill(proc.pid));
+  activeProcess.forEach(proc => {
+    if (proc.pid === undefined) return;
+    treeKill(proc.pid);
+  });
 };
 
 const keyHandlerHelpers = (activeProcess: Array<ChildProcess>) => {
@@ -176,7 +178,10 @@ const keyHandlerHelpers = (activeProcess: Array<ChildProcess>) => {
         false,
         "Received 'q' press, stopping processes",
       );
-      activeProcess.forEach(proc => treeKill(proc.pid));
+      activeProcess.forEach(proc => {
+        if (proc.pid === undefined) return;
+        treeKill(proc.pid);
+      });
       return;
     }
     if (str.toLowerCase() === "c") {

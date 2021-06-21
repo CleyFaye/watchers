@@ -2,7 +2,7 @@
   "files.exclude": {
     ".tscache": true,
     ".vscode": true,
-    "**/bin/": true,
+    "lib": true,
     "node_modules": true
   }
 }

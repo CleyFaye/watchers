@@ -2,7 +2,7 @@
   "name": "@cley_faye/watchers",
   "version": "2.0.1",
   "description": "Run multiple watcher at once",
-  "bin": "bin/main.js",
+  "bin": "bin/watcher.js",
   "type": "module",
   "scripts": {
     "prepack": "npm run grunt -- clean build",
@@ -32,18 +32,19 @@
     "grunt": "^1.3.0",
     "grunt-banner": "^0.6.0",
     "grunt-contrib-clean": "^2.0.0",
-    "grunt-ts": "^6.0.0-beta.22",
+    "grunt-shell": "^3.0.1",
     "load-grunt-tasks": "^5.1.0",
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@cley_faye/loadconfig": "^3.0.2",
+    "@cley_faye/loadconfig": "^4.0.0",
     "ansi-escape-sequences": "^6.0.1",
     "chalk": "^4.1.0",
     "tree-kill": "^1.2.2"
   },
   "files": [
-    "bin/**/*",
-    "!bin/**/*.map"
+    "bin/**/*.js",
+    "lib/**/*.js",
+    "lib/**/*.d.ts"
   ]
 }

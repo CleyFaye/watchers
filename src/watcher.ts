@@ -227,8 +227,8 @@ export const watcher = (options: WatcherOptions): void => {
   process.once("SIGINT", sigHandler);
 };
 
-export const main = (): void => {
-  watcher(loadConfig<WatcherOptions>(
+export const main = async (): Promise<void> => {
+  watcher(await loadConfig<WatcherOptions>(
     {
       options: {
         command: {

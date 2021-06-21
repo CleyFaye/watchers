@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const loadGruntTasks = require("load-grunt-tasks");
 const {readFileSync} = require("fs");
 
@@ -15,7 +16,7 @@ module.exports = grunt => {
   grunt.initConfig({
     "clean": {
       build: [
-        "bin",
+        "lib",
       ],
       cache: [
         "**/.cache",
@@ -23,12 +24,11 @@ module.exports = grunt => {
         ".tsbuildinfo",
       ],
     },
-    "ts": {
-      build: {
-        tsconfig: {
-          tsconfig: "./",
-          passThrough: true,
-        },
+    "shell": {
+      ts_build: {
+        command: "npm exec tsc",
+        stdout: true,
+        stderr: true,
       },
     },
     "usebanner": {
@@ -36,7 +36,7 @@ module.exports = grunt => {
       build: {
         files: [{
           expand: true,
-          cwd: "bin",
+          cwd: "lib",
           src: ["**/*.js"],
         }],
       },
@@ -47,7 +47,7 @@ module.exports = grunt => {
     "build",
     "Build the project into JavaScript files",
     [
-      "ts:build",
+      "shell:ts_build",
       "usebanner:build",
     ],
   );
